@@ -339,3 +339,23 @@ function shareOnSocial(platform, url, text) {
         window.open(shareUrls[platform], '_blank', 'width=600,height=400');
     }
 }
+
+// Experience section interactivity
+document.addEventListener('DOMContentLoaded', function() {
+    const companyCards = document.querySelectorAll('.company-card');
+    const jobDetails = document.querySelectorAll('.job-detail');
+    
+    companyCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const targetCompany = this.getAttribute('data-company');
+            
+            // Remove active class from all cards and details
+            companyCards.forEach(c => c.classList.remove('active'));
+            jobDetails.forEach(d => d.classList.remove('active'));
+            
+            // Add active class to clicked card and corresponding detail
+            this.classList.add('active');
+            document.getElementById(targetCompany).classList.add('active');
+        });
+    });
+});
