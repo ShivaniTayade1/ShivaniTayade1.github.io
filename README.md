@@ -73,7 +73,7 @@ Feel free to submit issues and pull requests to improve this template.
 ## Professional Background
 
 - **Current Role**: Analytical Consultant 2 at Wells Fargo
-- **Previous Experience**: Analyst at HSBC (5+ years in finance and data analytics)
+- **Previous Experience**: Analyst at HSBC (6+ years in finance and data analytics)
 - **Education**: MS Business Analytics from UC Davis, BE Mechanical Engineering
 - **Specialties**: Tableau dashboards, time series forecasting (ARIMA/SARIMAX), machine learning, GNNs, NLP
 
