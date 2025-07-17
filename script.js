@@ -94,22 +94,33 @@ function initializeNavigation() {
 
 // Hero section functionality
 function initializeHero() {
-    // Typing animation for hero title
+    // Typing animation for hero title (skip if contains HTML)
     const heroTitle = document.querySelector('.hero-content h1');
     if (heroTitle) {
-        const originalText = heroTitle.innerHTML;
-        heroTitle.innerHTML = '';
+        const originalText = heroTitle.textContent;
+        const containsHTML = heroTitle.innerHTML !== originalText;
         
-        let i = 0;
-        const typeWriter = () => {
-            if (i < originalText.length) {
-                heroTitle.innerHTML += originalText.charAt(i);
-                i++;
-                setTimeout(typeWriter, 50);
-            }
-        };
-        
-        setTimeout(typeWriter, 1000);
+        if (!containsHTML) {
+            heroTitle.textContent = '';
+            
+            let i = 0;
+            const typeWriter = () => {
+                if (i < originalText.length) {
+                    heroTitle.textContent += originalText.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 50);
+                }
+            };
+            
+            setTimeout(typeWriter, 1000);
+        } else {
+            // Just add a fade-in animation for HTML content
+            heroTitle.style.opacity = '0';
+            setTimeout(() => {
+                heroTitle.style.transition = 'opacity 1s ease-in-out';
+                heroTitle.style.opacity = '1';
+            }, 500);
+        }
     }
 
     // Animated counters for hero stats
