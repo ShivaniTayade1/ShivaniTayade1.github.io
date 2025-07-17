@@ -201,7 +201,12 @@ function initializeExperience() {
     const companyCards = document.querySelectorAll('.company-card');
     const experienceContents = document.querySelectorAll('.experience-content');
     
-    companyCards.forEach(card => {
+    if (companyCards.length === 0 || experienceContents.length === 0) {
+        console.warn('Experience section elements not found');
+        return;
+    }
+    
+    companyCards.forEach((card, index) => {
         card.addEventListener('click', function() {
             const target = this.getAttribute('data-target');
             
@@ -214,14 +219,24 @@ function initializeExperience() {
             const targetContent = document.getElementById(target);
             if (targetContent) {
                 targetContent.classList.add('active');
+            } else {
+                console.error('Content not found for target:', target);
             }
         });
     });
     
     // Set first card as active by default
     if (companyCards.length > 0) {
-        companyCards[0].classList.add('active');
-        experienceContents[0].classList.add('active');
+        const firstCard = companyCards[0];
+        const firstTarget = firstCard.getAttribute('data-target');
+        
+        firstCard.classList.add('active');
+        const firstContent = document.getElementById(firstTarget);
+        if (firstContent) {
+            firstContent.classList.add('active');
+        } else {
+            console.error('First content not found for target:', firstTarget);
+        }
     }
 }
 
