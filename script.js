@@ -39,8 +39,22 @@ function initializeNavigation() {
         });
     });
 
-    // Active navigation highlighting
-    function updateActiveNav() {
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Active navigation highlighting - defined globally for performance optimization
+    window.updateActiveNav = function() {
         const sections = document.querySelectorAll('section');
         const scrollPosition = window.scrollY + 100;
 
@@ -58,10 +72,10 @@ function initializeNavigation() {
                 });
             }
         });
-    }
+    };
 
-    // Navbar background change on scroll
-    function updateNavbarBackground() {
+    // Navbar background change on scroll - defined globally for performance optimization
+    window.updateNavbarBackground = function() {
         if (window.scrollY > 50) {
             navbar.style.background = 'rgba(255, 255, 255, 0.98)';
             navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
@@ -69,27 +83,7 @@ function initializeNavigation() {
             navbar.style.background = 'rgba(255, 255, 255, 0.95)';
             navbar.style.boxShadow = 'none';
         }
-    }
-
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-
-    // Scroll event listeners
-    window.addEventListener('scroll', debounce(() => {
-        updateActiveNav();
-        updateNavbarBackground();
-    }, 10));
+    };
 }
 
 // Hero section functionality
@@ -204,42 +198,30 @@ function initializeSkills() {
 
 // Experience section functionality
 function initializeExperience() {
-    const timelineItems = document.querySelectorAll('.timeline-item');
+    const companyCards = document.querySelectorAll('.company-card');
+    const experienceContents = document.querySelectorAll('.experience-content');
     
-    timelineItems.forEach(item => {
-        const header = item.querySelector('.timeline-header');
-        const content = item.querySelector('.timeline-content');
-        
-        if (header && content) {
-            header.addEventListener('click', function() {
-                const isActive = item.classList.contains('active');
-                
-                // Close all other timeline items
-                timelineItems.forEach(otherItem => {
-                    if (otherItem !== item) {
-                        otherItem.classList.remove('active');
-                    }
-                });
-                
-                // Toggle current item
-                item.classList.toggle('active');
-                
-                // Animate metrics if opening
-                if (!isActive) {
-                    const metrics = item.querySelectorAll('.metric-number');
-                    metrics.forEach((metric, index) => {
-                        setTimeout(() => {
-                            animateMetric(metric);
-                        }, index * 200);
-                    });
-                }
-            });
-        }
+    companyCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const target = this.getAttribute('data-target');
+            
+            // Remove active class from all cards and contents
+            companyCards.forEach(c => c.classList.remove('active'));
+            experienceContents.forEach(c => c.classList.remove('active'));
+            
+            // Add active class to clicked card and corresponding content
+            this.classList.add('active');
+            const targetContent = document.getElementById(target);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+        });
     });
-
-    // Set first item as active by default
-    if (timelineItems.length > 0) {
-        timelineItems[0].classList.add('active');
+    
+    // Set first card as active by default
+    if (companyCards.length > 0) {
+        companyCards[0].classList.add('active');
+        experienceContents[0].classList.add('active');
     }
 }
 
@@ -554,27 +536,294 @@ function shareOnSocial(platform, url, text) {
     }
 }
 
-// Performance optimization
+// Performance optimizations
 function optimizePerformance() {
     // Lazy load images
     const images = document.querySelectorAll('img[data-src]');
-    const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.classList.remove('lazy');
-                imageObserver.unobserve(img);
-            }
+    if (images.length > 0) {
+        const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.remove('lazy');
+                    imageObserver.unobserve(img);
+                }
+            });
         });
-    });
-    
-    images.forEach(img => imageObserver.observe(img));
+        
+        images.forEach(img => imageObserver.observe(img));
+    }
     
     // Reduce motion for users who prefer it
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         document.documentElement.style.setProperty('--animation-duration', '0.01s');
+        // Disable parallax and other motion effects
+        const heroPattern = document.querySelector('.hero-pattern');
+        if (heroPattern) {
+            heroPattern.style.animation = 'none';
+        }
     }
+    
+    // Optimize scroll listeners
+    let ticking = false;
+    
+    function updateOnScroll() {
+        updateActiveNav();
+        updateNavbarBackground();
+        ticking = false;
+    }
+    
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(updateOnScroll);
+            ticking = true;
+        }
+    }
+    
+    window.addEventListener('scroll', requestTick, { passive: true });
+}
+
+// Simplified animation functions for better performance
+function animateCounter(element, target, suffix = '') {
+    const duration = 1000; // Reduced from 2000ms
+    const steps = 30; // Reduced steps for better performance
+    const increment = target / steps;
+    let current = 0;
+    let step = 0;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        step++;
+        element.textContent = Math.floor(current) + suffix;
+        
+        if (step >= steps) {
+            element.textContent = target + suffix;
+            clearInterval(timer);
+        }
+    }, duration / steps);
+}
+
+function animateMetric(element) {
+    const originalText = element.textContent;
+    const numericValue = parseFloat(originalText.replace(/[^\d.]/g, ''));
+    const suffix = originalText.replace(/[\d.]/g, '');
+    
+    if (!isNaN(numericValue)) {
+        let current = 0;
+        const steps = 20; // Reduced steps
+        const increment = numericValue / steps;
+        
+        const timer = setInterval(() => {
+            current += increment;
+            element.textContent = Math.floor(current) + suffix;
+            
+            if (current >= numericValue) {
+                element.textContent = originalText;
+                clearInterval(timer);
+            }
+        }, 50); // Faster animation
+    }
+}
+
+// Optimized debounce function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Reduce animation complexity
+function initializeAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in-up');
+                fadeObserver.unobserve(entry.target); // Stop observing after animation
+            }
+        });
+    }, observerOptions);
+
+    // Observe only essential elements
+    const elementsToAnimate = document.querySelectorAll(
+        '.achievement-card, .project-card, .company-card'
+    );
+    
+    elementsToAnimate.forEach(element => {
+        fadeObserver.observe(element);
+    });
+
+    // Simplified hover effects
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('disabled')) {
+                this.style.transform = 'translateY(-1px)';
+            }
+        }, { passive: true });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        }, { passive: true });
+    });
+}
+
+// Optimized scroll effects
+function initializeScrollEffects() {
+    const scrollIndicator = document.querySelector('.scroll-indicator');
+    if (scrollIndicator) {
+        const handleScroll = debounce(() => {
+            const scrolled = window.pageYOffset;
+            scrollIndicator.style.opacity = scrolled > 100 ? '0' : '1';
+        }, 16); // 60fps
+        
+        window.addEventListener('scroll', handleScroll, { passive: true });
+    }
+}
+
+// Simplified hero initialization
+function initializeHero() {
+    const heroTitle = document.querySelector('.hero-content h1');
+    if (heroTitle) {
+        const originalText = heroTitle.textContent;
+        const containsHTML = heroTitle.innerHTML !== originalText;
+        
+        if (!containsHTML) {
+            heroTitle.textContent = '';
+            
+            let i = 0;
+            const typeWriter = () => {
+                if (i < originalText.length) {
+                    heroTitle.textContent += originalText.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 30); // Faster typing
+                }
+            };
+            
+            setTimeout(typeWriter, 300); // Reduced delay
+        } else {
+            heroTitle.style.opacity = '0';
+            setTimeout(() => {
+                heroTitle.style.transition = 'opacity 0.5s ease-in-out';
+                heroTitle.style.opacity = '1';
+            }, 200); // Reduced delay
+        }
+    }
+
+    // Simplified counter animation
+    const statNumbers = document.querySelectorAll('.stat-number');
+    statNumbers.forEach(stat => {
+        const finalValue = stat.textContent;
+        const numericValue = parseFloat(finalValue.replace(/[^\d.]/g, ''));
+        const suffix = finalValue.replace(/[\d.]/g, '');
+        
+        if (!isNaN(numericValue)) {
+            animateCounter(stat, numericValue, suffix);
+        }
+    });
+}
+
+// Remove heavy parallax effect
+// Parallax effect removed for better performance
+
+// Simplified contact form
+function initializeContact() {
+    const contactForm = document.getElementById('contactForm');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(contactForm);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const subject = formData.get('subject');
+            const message = formData.get('message');
+            
+            if (!name || !email || !subject || !message) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showNotification('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                showNotification('Thank you for your message! I\'ll get back to you soon.', 'success');
+                contactForm.reset();
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 1000); // Reduced delay
+        });
+    }
+}
+
+// Optimized notification system
+function showNotification(message, type) {
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    Object.assign(notification.style, {
+        position: 'fixed',
+        top: '20px',
+        right: '20px',
+        background: type === 'success' ? '#10b981' : '#ef4444',
+        color: 'white',
+        padding: '1rem 1.5rem',
+        borderRadius: '0.5rem',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+        zIndex: '10000',
+        opacity: '0',
+        transform: 'translateY(-20px)',
+        transition: 'all 0.3s ease',
+        maxWidth: '350px',
+        fontWeight: '500',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem'
+    });
+    
+    document.body.appendChild(notification);
+    
+    requestAnimationFrame(() => {
+        notification.style.opacity = '1';
+        notification.style.transform = 'translateY(0)';
+    });
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(-20px)';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000); // Reduced display time
 }
 
 // Initialize performance optimizations
