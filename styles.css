@@ -64,7 +64,12 @@ p {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    color: transparent;
     font-weight: 700;
+    display: inline;
+    /* Fallback for browsers that don't support background-clip */
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
 
 /* Section Headers */
@@ -238,12 +243,14 @@ p {
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--primary-blue);
     border-radius: 50px;
     font-size: 0.875rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
     backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .hero-description {
@@ -344,12 +351,24 @@ p {
 }
 
 .profile-container {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(20px);
     border-radius: 1.5rem;
     padding: 2rem;
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container h3 {
+    color: white;
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.profile-container p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1rem;
 }
 
 .profile-image {
@@ -551,16 +570,25 @@ p {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    border: 1px solid transparent;
 }
 
 .status-badge.current {
     background: var(--accent-green);
     color: white;
+    border-color: var(--accent-green);
 }
 
 .status-badge.education {
     background: var(--secondary-purple);
     color: white;
+    border-color: var(--secondary-purple);
+}
+
+.status-badge:not(.current):not(.education) {
+    background: rgba(100, 116, 139, 0.1);
+    color: var(--text-secondary);
+    border-color: rgba(100, 116, 139, 0.2);
 }
 
 .timeline-content {
@@ -779,6 +807,23 @@ p {
     margin-bottom: 1.5rem;
 }
 
+.project-tech .tech-tag {
+    padding: 0.25rem 0.75rem;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary-blue);
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    transition: all 0.3s ease;
+}
+
+.project-tech .tech-tag:hover {
+    background: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+}
+
 .project-links {
     display: flex;
     gap: 0.5rem;
@@ -824,16 +869,27 @@ p {
     transition: all 0.3s ease;
     font-weight: 500;
     text-align: left;
+    color: var(--text-primary);
 }
 
 .skill-nav-btn:hover {
     background: var(--bg-tertiary);
+    border-color: var(--border-medium);
 }
 
 .skill-nav-btn.active {
     background: var(--primary-blue);
     color: white;
     border-color: var(--primary-blue);
+}
+
+.skill-nav-btn.active i {
+    color: white;
+}
+
+.skill-nav-btn i {
+    color: var(--primary-blue);
+    transition: color 0.3s ease;
 }
 
 .skills-content {
