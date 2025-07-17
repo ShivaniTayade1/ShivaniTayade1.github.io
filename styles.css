@@ -60,7 +60,7 @@ p {
 }
 
 .highlight {
-    background: var(--gradient-primary);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -70,6 +70,7 @@ p {
     /* Fallback for browsers that don't support background-clip */
     background-size: 100% 100%;
     background-repeat: no-repeat;
+    text-shadow: 0 0 0 rgba(251, 191, 36, 0.3);
 }
 
 /* Section Headers */
