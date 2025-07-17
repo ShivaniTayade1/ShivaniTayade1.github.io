@@ -73,6 +73,15 @@ p {
     text-shadow: 0 0 0 rgba(251, 191, 36, 0.3);
 }
 
+/* Fallback for browsers that don't support background-clip */
+@supports not (-webkit-background-clip: text) {
+    .highlight {
+        color: #fbbf24;
+        background: none;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+}
+
 /* Section Headers */
 .section-header {
     text-align: center;
