@@ -459,53 +459,42 @@ body {
     color: #2563eb;
 }
 
-/* Leadership */
 /* Leadership Section */
 .leadership {
     padding: 80px 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: white;
 }
 
 .leadership h2 {
     text-align: center;
     font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: white;
-}
-
-.leadership-subtitle {
-    text-align: center;
-    font-size: 1.2rem;
-    opacity: 0.9;
     margin-bottom: 3rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+    color: #1e293b;
 }
 
 .leadership-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 2.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
     max-width: 900px;
     margin: 0 auto;
+    border: 1px solid #e2e8f0;
 }
 
 .leadership-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 2rem;
     margin-bottom: 2rem;
-    text-align: center;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .leadership-icon {
     width: 80px;
     height: 80px;
-    background: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -515,61 +504,106 @@ body {
     flex-shrink: 0;
 }
 
-.leadership-title h3 {
+.leadership-content {
+    flex: 1;
+}
+
+.leadership-content h3 {
     font-size: 1.8rem;
+    color: #1e293b;
     margin-bottom: 0.5rem;
 }
 
-.leadership-title h4 {
+.leadership-content h4 {
     font-size: 1.2rem;
-    color: #e0e7ff;
+    color: #2563eb;
     margin-bottom: 0.5rem;
+    font-weight: 500;
 }
 
 .leadership-duration {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    opacity: 0.8;
+    color: #64748b;
     font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.leadership-duration i {
+    color: #2563eb;
 }
 
 .leadership-description {
-    text-align: center;
-    margin-bottom: 2.5rem;
-}
-
-.leadership-description p {
-    font-size: 1.1rem;
+    color: #64748b;
     line-height: 1.6;
-    opacity: 0.9;
+    font-size: 1rem;
+    margin: 0;
 }
 
 .leadership-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 2rem;
+}
+
+.leadership-stat {
     text-align: center;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
 }
 
-.stat-item h3 {
-    font-size: 2.5rem;
+.leadership-stat:hover {
+    transform: translateY(-5px);
+}
+
+.leadership-stat h3 {
+    font-size: 2rem;
+    color: #2563eb;
     margin-bottom: 0.5rem;
-    color: #fbbf24;
 }
 
-.stat-item p {
-    font-size: 1.1rem;
+.leadership-stat p {
+    font-size: 1rem;
     font-weight: 600;
+    color: #1e293b;
     margin-bottom: 0.5rem;
 }
 
-.stat-item span {
+.leadership-stat span {
     font-size: 0.9rem;
-    opacity: 0.8;
+    color: #64748b;
     line-height: 1.4;
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+    .leadership-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .leadership-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .leadership-stat h3 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .leadership-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .leadership-card {
+        padding: 1.5rem;
+    }
+}
 /* Responsive Design */
 @media (max-width: 768px) {
     .leadership-header {
